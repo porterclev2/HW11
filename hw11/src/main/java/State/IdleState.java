@@ -21,6 +21,7 @@ public class IdleState implements StateOfVendingMachine {
             return;
         }
         vendingMachine.setSelectedSnack(snack);
+        vendingMachine.setState(vendingMachine.getWaitingForMoneyState());
         System.out.println(snack.getName() + " selected. Please insert " + Snack.formatMoney(snack.getPrice()));
     }
 

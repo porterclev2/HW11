@@ -8,10 +8,12 @@ import ChainOfResponsibility.SnackDispenseHandler;
 
 public class VendingMachine {
     private StateOfVendingMachine idleState;
+    private StateOfVendingMachine waitingForMoneyState;
     private StateOfVendingMachine state;
     private SnackDispenseHandler snackDispenser;
     private List<Snack> snacks;
     private Snack selectedSnack;
+    private double insertedMoney;
 
     public VendingMachine(SnackDispenseHandler snackDispenser) {
         if (snackDispenser == null) {
@@ -20,6 +22,7 @@ public class VendingMachine {
         this.snackDispenser = snackDispenser;
         this.snacks = snackDispenser.getSnacksInChain();
         this.idleState = new IdleState(this);
+        this.waitingForMoneyState = new WaitingForMoneyState(this);
         this.state = idleState;
     }
 
@@ -33,6 +36,10 @@ public class VendingMachine {
 
     public StateOfVendingMachine getIdleState() {
         return idleState;
+    }
+
+    public StateOfVendingMachine getWaitingForMoneyState() {
+        return waitingForMoneyState;
     }
 
     public SnackDispenseHandler getSnackDispenser() {
@@ -60,6 +67,33 @@ public class VendingMachine {
         this.selectedSnack = selectedSnack;
     }
 
+    public double getInsertedMoney() {
+        return insertedMoney;
+    }
+
+    void addMoney(double amount) {
+        insertedMoney = roundToCents(insertedMoney + amount);
+    }
+
+    public double getAmountOwed() {
+        if (selectedSnack == null) {
+            return 0;
+        }
+        return Math.max(0, roundToCents(selectedSnack.getPrice() - insertedMoney));
+    }
+
+    public double getChange() {
+        if (selectedSnack == null) {
+            return 0;
+        }
+        return Math.max(0, roundToCents(insertedMoney - selectedSnack.getPrice()));
+    }
+
+    void reset() {
+        selectedSnack = null;
+        insertedMoney = 0;
+    }
+
     public void selectSnack(String snackName) {
         state.selectSnack(snackName);
     }
@@ -73,6 +107,10 @@ public class VendingMachine {
 
     public void dispenseSnack() {
         state.dispenseSnack();
+    }
+
+    private static double roundToCents(double amount) {
+        return Math.round(amount * 100) / 100.0;
     }
 
     @Override
