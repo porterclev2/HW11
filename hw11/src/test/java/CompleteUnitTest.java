@@ -7,9 +7,10 @@ import State.VendingMachineTest;
 import State.IdleStateTest;
 import State.WaitingForMoneyStateTest;
 import State.DispensingSnackStateTest;
+import State.VendingMachineDriverTest;
 
 @Suite
-@SelectClasses({SnackTest.class, SnackDispenseHandlerTest.class, VendingMachineTest.class, IdleStateTest.class, WaitingForMoneyStateTest.class, DispensingSnackStateTest.class})
+@SelectClasses({SnackTest.class, SnackDispenseHandlerTest.class, VendingMachineTest.class, IdleStateTest.class, WaitingForMoneyStateTest.class, DispensingSnackStateTest.class, VendingMachineDriverTest.class})
 public class CompleteUnitTest {
 
 }
