@@ -55,14 +55,16 @@ public class VendingMachineTest {
     public void testGetStates() {
         assertInstanceOf(IdleState.class, vendingMachine.getIdleState());
         assertInstanceOf(WaitingForMoneyState.class, vendingMachine.getWaitingForMoneyState());
+        assertInstanceOf(DispensingSnackState.class, vendingMachine.getDispensingSnackState());
         assertSame(vendingMachine, ((IdleState) vendingMachine.getIdleState()).getVendingMachine());
         assertSame(vendingMachine, ((WaitingForMoneyState) vendingMachine.getWaitingForMoneyState()).getVendingMachine());
+        assertSame(vendingMachine, ((DispensingSnackState) vendingMachine.getDispensingSnackState()).getVendingMachine());
     }
 
     @Test
     public void testSetState() {
-        vendingMachine.setState(vendingMachine.getWaitingForMoneyState());
-        assertSame(vendingMachine.getWaitingForMoneyState(), vendingMachine.getState());
+        vendingMachine.setState(vendingMachine.getDispensingSnackState());
+        assertSame(vendingMachine.getDispensingSnackState(), vendingMachine.getState());
     }
 
     @Test
@@ -139,9 +141,9 @@ public class VendingMachineTest {
 
     @Test
     public void testSelectSnackDelegatesToState() {
-        vendingMachine.setState(vendingMachine.getWaitingForMoneyState());
+        vendingMachine.setState(vendingMachine.getDispensingSnackState());
         vendingMachine.setSelectedSnack(coke);
-        assertEquals("Coke is already selected. Please insert $1.50" + System.lineSeparator(),
+        assertEquals("Please wait, Coke is being dispensed" + System.lineSeparator(),
                 captureOutput(() -> vendingMachine.selectSnack("Snickers")));
         assertSame(coke, vendingMachine.getSelectedSnack());
     }
