@@ -28,17 +28,8 @@ public class WaitingForMoneyState implements StateOfVendingMachine {
             System.out.println("Please insert " + Snack.formatMoney(vendingMachine.getAmountOwed()) + " more");
             return;
         }
-        Snack snack = vendingMachine.getSelectedSnack();
-        double insertedMoney = vendingMachine.getInsertedMoney();
-        if (vendingMachine.getSnackDispenser().dispenseSnack(snack.getName(), insertedMoney)) {
-            double change = vendingMachine.getChange();
-            System.out.println("Dispensed " + snack.getName()
-                    + (change > 0 ? ". Returning change " + Snack.formatMoney(change) : ""));
-        } else {
-            System.out.println(snack.getName() + " is out of stock. Returning " + Snack.formatMoney(insertedMoney));
-        }
-        vendingMachine.reset();
-        vendingMachine.setState(vendingMachine.getIdleState());
+        vendingMachine.setState(vendingMachine.getDispensingSnackState());
+        vendingMachine.dispenseSnack();
     }
 
     @Override

@@ -9,6 +9,7 @@ import ChainOfResponsibility.SnackDispenseHandler;
 public class VendingMachine {
     private StateOfVendingMachine idleState;
     private StateOfVendingMachine waitingForMoneyState;
+    private StateOfVendingMachine dispensingSnackState;
     private StateOfVendingMachine state;
     private SnackDispenseHandler snackDispenser;
     private List<Snack> snacks;
@@ -23,6 +24,7 @@ public class VendingMachine {
         this.snacks = snackDispenser.getSnacksInChain();
         this.idleState = new IdleState(this);
         this.waitingForMoneyState = new WaitingForMoneyState(this);
+        this.dispensingSnackState = new DispensingSnackState(this);
         this.state = idleState;
     }
 
@@ -40,6 +42,10 @@ public class VendingMachine {
 
     public StateOfVendingMachine getWaitingForMoneyState() {
         return waitingForMoneyState;
+    }
+
+    public StateOfVendingMachine getDispensingSnackState() {
+        return dispensingSnackState;
     }
 
     public SnackDispenseHandler getSnackDispenser() {
