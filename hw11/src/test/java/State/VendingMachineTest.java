@@ -42,6 +42,7 @@ public class VendingMachineTest {
     public void testConstructorStartsIdle() {
         assertSame(vendingMachine.getIdleState(), vendingMachine.getState());
         assertNull(vendingMachine.getSelectedSnack());
+        assertEquals(0, vendingMachine.getInsertedMoney());
     }
 
     @Test
@@ -51,16 +52,17 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void testGetIdleState() {
+    public void testGetStates() {
         assertInstanceOf(IdleState.class, vendingMachine.getIdleState());
+        assertInstanceOf(WaitingForMoneyState.class, vendingMachine.getWaitingForMoneyState());
         assertSame(vendingMachine, ((IdleState) vendingMachine.getIdleState()).getVendingMachine());
+        assertSame(vendingMachine, ((WaitingForMoneyState) vendingMachine.getWaitingForMoneyState()).getVendingMachine());
     }
 
     @Test
     public void testSetState() {
-        IdleState otherState = new IdleState(vendingMachine);
-        vendingMachine.setState(otherState);
-        assertSame(otherState, vendingMachine.getState());
+        vendingMachine.setState(vendingMachine.getWaitingForMoneyState());
+        assertSame(vendingMachine.getWaitingForMoneyState(), vendingMachine.getState());
     }
 
     @Test
@@ -92,9 +94,55 @@ public class VendingMachineTest {
     }
 
     @Test
+    public void testAddMoney() {
+        vendingMachine.addMoney(1.00);
+        vendingMachine.addMoney(0.25);
+        assertEquals(1.25, vendingMachine.getInsertedMoney());
+    }
+
+    @Test
+    public void testAddMoneyRoundsToCents() {
+        vendingMachine.addMoney(0.10);
+        vendingMachine.addMoney(0.20);
+        assertEquals(0.30, vendingMachine.getInsertedMoney());
+    }
+
+    @Test
+    public void testGetAmountOwed() {
+        assertEquals(0, vendingMachine.getAmountOwed());
+        vendingMachine.setSelectedSnack(coke);
+        assertEquals(1.50, vendingMachine.getAmountOwed());
+        vendingMachine.addMoney(1.10);
+        assertEquals(0.40, vendingMachine.getAmountOwed());
+        vendingMachine.addMoney(1.00);
+        assertEquals(0, vendingMachine.getAmountOwed());
+    }
+
+    @Test
+    public void testGetChange() {
+        assertEquals(0, vendingMachine.getChange());
+        vendingMachine.setSelectedSnack(coke);
+        vendingMachine.addMoney(1.00);
+        assertEquals(0, vendingMachine.getChange());
+        vendingMachine.addMoney(1.20);
+        assertEquals(0.70, vendingMachine.getChange());
+    }
+
+    @Test
+    public void testReset() {
+        vendingMachine.setSelectedSnack(coke);
+        vendingMachine.addMoney(1.00);
+        vendingMachine.reset();
+        assertNull(vendingMachine.getSelectedSnack());
+        assertEquals(0, vendingMachine.getInsertedMoney());
+    }
+
+    @Test
     public void testSelectSnackDelegatesToState() {
-        assertEquals("Coke selected. Please insert $1.50" + System.lineSeparator(),
-                captureOutput(() -> vendingMachine.selectSnack("Coke")));
+        vendingMachine.setState(vendingMachine.getWaitingForMoneyState());
+        vendingMachine.setSelectedSnack(coke);
+        assertEquals("Coke is already selected. Please insert $1.50" + System.lineSeparator(),
+                captureOutput(() -> vendingMachine.selectSnack("Snickers")));
         assertSame(coke, vendingMachine.getSelectedSnack());
     }
 
@@ -102,6 +150,7 @@ public class VendingMachineTest {
     public void testInsertMoneyDelegatesToState() {
         assertEquals("Please select a snack first. Returning $1.00" + System.lineSeparator(),
                 captureOutput(() -> vendingMachine.insertMoney(1.00)));
+        assertEquals(0, vendingMachine.getInsertedMoney());
     }
 
     @Test
@@ -118,9 +167,24 @@ public class VendingMachineTest {
     }
 
     @Test
+    public void testFullPurchase() {
+        captureOutput(() -> {
+            vendingMachine.selectSnack("Coke");
+            vendingMachine.insertMoney(1.00);
+            vendingMachine.insertMoney(1.00);
+        });
+        assertEquals(1, coke.getQuantity());
+        assertSame(vendingMachine.getIdleState(), vendingMachine.getState());
+        assertNull(vendingMachine.getSelectedSnack());
+        assertEquals(0, vendingMachine.getInsertedMoney());
+    }
+
+    @Test
     public void testToString() {
         assertEquals("Vending machine (Idle):" + System.lineSeparator()
                 + "Coke - $1.50 (2 left)" + System.lineSeparator()
                 + "Snickers - $1.75 (1 left)", vendingMachine.toString());
+        vendingMachine.setState(vendingMachine.getWaitingForMoneyState());
+        assertEquals("Vending machine (Waiting for Money):", vendingMachine.toString().lines().findFirst().get());
     }
 }

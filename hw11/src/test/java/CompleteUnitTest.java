@@ -5,9 +5,10 @@ import ChainOfResponsibility.SnackTest;
 import ChainOfResponsibility.SnackDispenseHandlerTest;
 import State.VendingMachineTest;
 import State.IdleStateTest;
+import State.WaitingForMoneyStateTest;
 
 @Suite
-@SelectClasses({SnackTest.class, SnackDispenseHandlerTest.class, VendingMachineTest.class, IdleStateTest.class})
+@SelectClasses({SnackTest.class, SnackDispenseHandlerTest.class, VendingMachineTest.class, IdleStateTest.class, WaitingForMoneyStateTest.class})
 public class CompleteUnitTest {
 
 }

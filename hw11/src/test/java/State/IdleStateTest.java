@@ -53,6 +53,7 @@ public class IdleStateTest {
         assertEquals("Coke selected. Please insert $1.50" + System.lineSeparator(),
                 captureOutput(() -> idleState.selectSnack("Coke")));
         assertSame(coke, vendingMachine.getSelectedSnack());
+        assertSame(vendingMachine.getWaitingForMoneyState(), vendingMachine.getState());
     }
 
     @Test
@@ -63,9 +64,10 @@ public class IdleStateTest {
     }
 
     @Test
-    public void testSelectSnackThatIsOutOfStock() {
+    public void testSelectSnackThatIsOutOfStockStillWaitsForMoney() {
         captureOutput(() -> idleState.selectSnack("Snickers"));
         assertSame(snickers, vendingMachine.getSelectedSnack());
+        assertSame(vendingMachine.getWaitingForMoneyState(), vendingMachine.getState());
     }
 
     @Test
@@ -80,6 +82,7 @@ public class IdleStateTest {
     public void testInsertMoneyReturnsMoney() {
         assertEquals("Please select a snack first. Returning $1.25" + System.lineSeparator(),
                 captureOutput(() -> idleState.insertMoney(1.25)));
+        assertEquals(0, vendingMachine.getInsertedMoney());
         assertSame(idleState, vendingMachine.getState());
     }
 
