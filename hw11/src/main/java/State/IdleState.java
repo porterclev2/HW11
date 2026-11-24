@@ -36,6 +36,11 @@ public class IdleState implements StateOfVendingMachine {
     }
 
     @Override
+    public void cancel() {
+        System.out.println("There is nothing to cancel");
+    }
+
+    @Override
     public String toString() {
         return "Idle";
     }

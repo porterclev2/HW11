@@ -123,6 +123,24 @@ public class WaitingForMoneyStateTest {
     }
 
     @Test
+    public void testCancelReturnsMoney() {
+        captureOutput(() -> waitingForMoneyState.insertMoney(1.00));
+        assertEquals("Cancelled Coke. Returning $1.00" + System.lineSeparator(),
+                captureOutput(waitingForMoneyState::cancel));
+        assertNull(vendingMachine.getSelectedSnack());
+        assertEquals(0, vendingMachine.getInsertedMoney());
+        assertSame(vendingMachine.getIdleState(), vendingMachine.getState());
+        assertEquals(2, coke.getQuantity());
+    }
+
+    @Test
+    public void testCancelWithNoMoneyInserted() {
+        assertEquals("Cancelled Coke. Returning $0.00" + System.lineSeparator(),
+                captureOutput(waitingForMoneyState::cancel));
+        assertSame(vendingMachine.getIdleState(), vendingMachine.getState());
+    }
+
+    @Test
     public void testToString() {
         assertEquals("Waiting for Money", waitingForMoneyState.toString());
     }

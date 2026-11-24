@@ -43,6 +43,11 @@ public class DispensingSnackState implements StateOfVendingMachine {
     }
 
     @Override
+    public void cancel() {
+        System.out.println("Cannot cancel, " + vendingMachine.getSelectedSnack().getName() + " is being dispensed");
+    }
+
+    @Override
     public String toString() {
         return "Dispensing Snack";
     }

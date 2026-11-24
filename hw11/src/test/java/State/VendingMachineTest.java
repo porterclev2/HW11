@@ -169,6 +169,12 @@ public class VendingMachineTest {
     }
 
     @Test
+    public void testCancelDelegatesToState() {
+        assertEquals("There is nothing to cancel" + System.lineSeparator(),
+                captureOutput(vendingMachine::cancel));
+    }
+
+    @Test
     public void testFullPurchase() {
         captureOutput(() -> {
             vendingMachine.selectSnack("Coke");

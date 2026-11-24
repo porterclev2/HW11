@@ -113,6 +113,15 @@ public class DispensingSnackStateTest {
     }
 
     @Test
+    public void testCancelWhileDispensing() {
+        startDispensing(coke, 1.50);
+        assertEquals("Cannot cancel, Coke is being dispensed" + System.lineSeparator(),
+                captureOutput(dispensingSnackState::cancel));
+        assertSame(coke, vendingMachine.getSelectedSnack());
+        assertSame(dispensingSnackState, vendingMachine.getState());
+    }
+
+    @Test
     public void testToString() {
         assertEquals("Dispensing Snack", dispensingSnackState.toString());
     }

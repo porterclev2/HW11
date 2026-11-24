@@ -6,4 +6,6 @@ public interface StateOfVendingMachine {
     void insertMoney(double amount);
 
     void dispenseSnack();
+
+    void cancel();
 }

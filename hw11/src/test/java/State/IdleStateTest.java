@@ -95,6 +95,13 @@ public class IdleStateTest {
     }
 
     @Test
+    public void testCancel() {
+        assertEquals("There is nothing to cancel" + System.lineSeparator(),
+                captureOutput(idleState::cancel));
+        assertSame(idleState, vendingMachine.getState());
+    }
+
+    @Test
     public void testToString() {
         assertEquals("Idle", idleState.toString());
     }

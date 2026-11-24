@@ -39,6 +39,14 @@ public class WaitingForMoneyState implements StateOfVendingMachine {
     }
 
     @Override
+    public void cancel() {
+        System.out.println("Cancelled " + vendingMachine.getSelectedSnack().getName() + ". Returning "
+                + Snack.formatMoney(vendingMachine.getInsertedMoney()));
+        vendingMachine.reset();
+        vendingMachine.setState(vendingMachine.getIdleState());
+    }
+
+    @Override
     public String toString() {
         return "Waiting for Money";
     }

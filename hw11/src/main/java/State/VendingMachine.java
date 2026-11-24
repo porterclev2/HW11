@@ -115,6 +115,10 @@ public class VendingMachine {
         state.dispenseSnack();
     }
 
+    public void cancel() {
+        state.cancel();
+    }
+
     private static double roundToCents(double amount) {
         return Math.round(amount * 100) / 100.0;
     }
